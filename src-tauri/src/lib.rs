@@ -1,5 +1,5 @@
 use tauri::{
-    menu::{Menu, MenuItem},
+    menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::TrayIconBuilder,
 };
 
@@ -14,6 +14,8 @@ pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
             // メニューの追加
+            let hide_i = MenuItem::with_id(app, "hide", "Hide", true, None::<&str>)?;
+            let separator = PredefinedMenuItem::separator(app)?;
             let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&quit_i])?;
             let _tray = TrayIconBuilder::new()
@@ -23,6 +25,10 @@ pub fn run() {
                     "quit" => {
                         println!("quit menu item was clicked");
                         app.exit(0);
+                    }
+                    "hide" => {
+                        println!("hide menu item was clicked");
+                        app.hide().unwrap();
                     }
                     _ => {
                         println!("menu item {:?} not handled", event.id);
